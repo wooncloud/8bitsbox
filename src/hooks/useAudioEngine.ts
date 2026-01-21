@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react';
 import * as Tone from 'tone';
 import { useSequencerStore } from '@/store/useSequencerStore';
-import type { Channel } from '@/store/useSequencerStore';
+import { createSynthMap } from '@/lib/audioUtils';
 
 /**
  * Tone.js 오디오 엔진 훅
@@ -33,34 +33,7 @@ export function useAudioEngine() {
     isInitializedRef.current = true;
 
     // 각 채널별 Synth 생성
-    channels.forEach((channel) => {
-      if (channel.type === 'noise') {
-        // Noise 채널: NoiseSynth 사용
-        const noiseSynth = new Tone.NoiseSynth({
-          noise: { type: 'white' },
-          envelope: {
-            attack: 0.001,
-            decay: 0.2,
-            sustain: 0,
-          },
-        }).toDestination();
-        synthsRef.current.set(channel.id, noiseSynth);
-      } else {
-        // Pulse, Triangle 채널: 일반 Synth 사용
-        const synth = new Tone.Synth({
-          oscillator: {
-            type: channel.waveform,
-          },
-          envelope: {
-            attack: 0.005,
-            decay: 0.1,
-            sustain: 0.3,
-            release: 0.1,
-          },
-        }).toDestination();
-        synthsRef.current.set(channel.id, synth);
-      }
-    });
+    synthsRef.current = createSynthMap(channels);
 
     // 16스텝 루프 생성 (16n = 16분음표)
     loopRef.current = new Tone.Loop((time) => {

@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-family: 'Press Start 2P', cursive;
+}
+
+body {
+  background-color: #212529;
+  color: #ffffff;
+  line-height: 1.5;
+}
+
+/* NES.css 변수 오버라이드 */
+:root {
+  --nes-text-color: #ffffff;
+  --nes-bg-color: #212529;
+}
+
+/* 커스텀 스크롤바 (8비트 느낌) */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #212529;
+  border: 2px solid #495057;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #92cc41;
+  border: 2px solid #76c442;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #76c442;
+}
+
+/* 유틸리티 클래스 */
+.ml-2 {
+  margin-left: 0.5rem;
+}
+
+.mt-2 {
+  margin-top: 0.5rem;
+}
+
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
+
+/* 반응형 폰트 크기 */
+@media (max-width: 768px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  html {
+    font-size: 12px;
+  }
+}

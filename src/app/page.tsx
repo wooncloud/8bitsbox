@@ -2,11 +2,15 @@
 
 import Grid from '@/components/sequencer/Grid';
 import Transport from '@/components/sequencer/Transport';
+import ChannelCard from '@/components/synth/ChannelCard';
 import { useAudioEngine } from '@/hooks/useAudioEngine';
+import { useSequencerStore } from '@/store/useSequencerStore';
 
 export default function Home() {
   // Tone.js 오디오 엔진 초기화
   useAudioEngine();
+
+  const { channels } = useSequencerStore();
 
   return (
     <main className="container">
@@ -18,6 +22,16 @@ export default function Home() {
       <Transport />
 
       <Grid />
+
+      {/* Channel Controls */}
+      <div className="channels-section">
+        <h2 className="section-title nes-text is-primary">Channel Settings</h2>
+        <div className="channels-grid">
+          {channels.map((channel) => (
+            <ChannelCard key={channel.id} channel={channel} />
+          ))}
+        </div>
+      </div>
 
       <style jsx>{`
         .container {
@@ -39,6 +53,22 @@ export default function Home() {
           margin-bottom: 0.5rem;
         }
 
+        .channels-section {
+          margin-top: 1rem;
+        }
+
+        .section-title {
+          font-size: 1.25rem;
+          margin-bottom: 1rem;
+          text-align: center;
+        }
+
+        .channels-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+          gap: 1rem;
+        }
+
         @media (max-width: 768px) {
           .container {
             padding: 1rem;
@@ -47,6 +77,14 @@ export default function Home() {
 
           h1 {
             font-size: 1.5rem;
+          }
+
+          .section-title {
+            font-size: 1rem;
+          }
+
+          .channels-grid {
+            grid-template-columns: 1fr;
           }
         }
       `}</style>

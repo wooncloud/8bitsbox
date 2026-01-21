@@ -79,13 +79,19 @@ export function useAudioEngine() {
     Tone.Transport.bpm.value = bpm;
   }, [bpm]);
 
-  // 채널별 볼륨 및 파형 업데이트
+  // 채널별 볼륨, 파형, 엔벨로프 업데이트
   useEffect(() => {
     channels.forEach((channel) => {
       const synth = synthsRef.current.get(channel.id);
       if (synth) {
         // 볼륨 설정 (0~1 → dB 변환)
         synth.volume.value = Tone.gainToDb(channel.volume);
+
+        // 엔벨로프 업데이트
+        synth.envelope.attack = channel.envelope.attack;
+        synth.envelope.decay = channel.envelope.decay;
+        synth.envelope.sustain = channel.envelope.sustain;
+        synth.envelope.release = channel.envelope.release;
 
         // 파형 업데이트 (Synth만 해당)
         if (synth instanceof Tone.Synth) {

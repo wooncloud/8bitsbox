@@ -42,6 +42,7 @@ export interface SequencerState {
   setCurrentStep: (step: number) => void;
   clearChannel: (channelId: string) => void;
   clearAll: () => void;
+  loadProject: (channels: Channel[], bpm: number) => void;
 }
 
 // 16개 스텝 초기화 함수
@@ -215,6 +216,15 @@ export const useSequencerStore = create<SequencerState>()(
           })),
           currentStep: 0,
         })),
+
+      // 프로젝트 불러오기
+      loadProject: (channels: Channel[], bpm: number) =>
+        set({
+          channels,
+          bpm,
+          currentStep: 0,
+          isPlaying: false,
+        }),
     }),
     {
       name: '8bitsbox-storage',

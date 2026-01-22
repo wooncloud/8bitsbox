@@ -50,12 +50,10 @@ npm start
 - ✅ 채널별 뮤트/언뮤트
 - ✅ 채널별 클리어 기능
 
-### 개발 예정
-
 **Phase 4: 폴리싱**
-- 🔄 JSON 파일 내보내기/불러오기
-- 🔄 파형 시각화
-- 🔄 추가 UI 개선
+- ✅ JSON 프로젝트 파일 내보내기/불러오기
+- ✅ 프로젝트 저장 및 로드 기능
+- ✅ 에러 핸들링 및 파일 검증
 
 ## 📁 프로젝트 구조
 
@@ -69,18 +67,20 @@ src/
 │   ├── sequencer/
 │   │   ├── Grid.tsx       # 시퀀서 그리드 컨테이너
 │   │   ├── StepButton.tsx # 개별 스텝 버튼
-│   │   └── Transport.tsx  # 재생 컨트롤 (Play/Stop/BPM)
+│   │   └── Transport.tsx  # 재생 컨트롤 (Play/Stop/BPM) + 파일 관리
 │   ├── synth/
 │   │   ├── ChannelCard.tsx      # 채널별 설정 카드
 │   │   └── EnvelopeControl.tsx  # ADSR 엔벨로프 컨트롤
 │   └── ui/
-│       └── Slider.tsx     # 재사용 가능한 슬라이더 컴포넌트
+│       ├── FileManager.tsx # 프로젝트 저장/로드 컴포넌트
+│       └── Slider.tsx      # 재사용 가능한 슬라이더 컴포넌트
 ├── store/
-│   └── useSequencerStore.ts  # Zustand 상태 관리 (ADSR 포함)
+│   └── useSequencerStore.ts  # Zustand 상태 관리 (ADSR, 프로젝트 로드)
 ├── hooks/
 │   └── useAudioEngine.ts     # Tone.js 오디오 엔진 훅
 └── lib/
-    └── audioUtils.ts         # Synth 생성 유틸리티
+    ├── audioUtils.ts         # Synth 생성 유틸리티
+    └── fileUtils.ts          # 프로젝트 파일 import/export 유틸리티
 ```
 
 ## 🎹 사용법
@@ -103,8 +103,14 @@ src/
 - **Mute/Unmute**: 채널 음소거/해제
 - **Clear**: 해당 채널 패턴 삭제
 
-### 자동 저장
-모든 설정(패턴, ADSR, 볼륨, 파형)은 localStorage에 자동 저장됩니다.
+### 프로젝트 관리
+- **💾 Save Project**: 현재 프로젝트를 `.8bb.json` 파일로 저장
+- **📂 Load Project**: 저장된 프로젝트 파일 불러오기
+- **자동 저장**: 모든 설정은 브라우저 localStorage에도 자동 저장
+
+### 파일 형식
+- 파일 확장자: `.8bb.json`
+- 포함 내용: 채널 설정, BPM, ADSR, 볼륨, 파형, 모든 스텝 데이터
 
 ## 📝 라이선스
 

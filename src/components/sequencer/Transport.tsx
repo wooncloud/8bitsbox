@@ -1,6 +1,7 @@
 'use client';
 
 import { useSequencerStore } from '@/store/useSequencerStore';
+import FileManager from '@/components/ui/FileManager';
 
 export default function Transport() {
   const { bpm, isPlaying, play, stop, setBpm, clearAll } = useSequencerStore();
@@ -79,6 +80,9 @@ export default function Transport() {
             Status: {isPlaying ? '🔊 Playing' : '⏸️ Stopped'}
           </span>
         </div>
+
+        {/* File Manager */}
+        <FileManager />
       </div>
 
       <style jsx>{`

@@ -228,6 +228,7 @@ export const useSequencerStore = create<SequencerState>()(
     }),
     {
       name: '8bitsbox-storage',
+      skipHydration: true,
     }
   )
 );

@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import Grid from '@/components/sequencer/Grid';
 import Transport from '@/components/sequencer/Transport';
 import ChannelCard from '@/components/synth/ChannelCard';
@@ -7,10 +8,15 @@ import { useAudioEngine } from '@/hooks/useAudioEngine';
 import { useSequencerStore } from '@/store/useSequencerStore';
 
 export default function Home() {
+  const { channels } = useSequencerStore();
+
+  // Zustand persist hydration (클라이언트에서만 실행)
+  useEffect(() => {
+    useSequencerStore.persist.rehydrate();
+  }, []);
+
   // Tone.js 오디오 엔진 초기화
   useAudioEngine();
-
-  const { channels } = useSequencerStore();
 
   return (
     <main className="container">

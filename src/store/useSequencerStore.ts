@@ -6,6 +6,13 @@ export interface NoteStep {
   pitch: string; // 예: "C4"
 }
 
+export interface Envelope {
+  attack: number;
+  decay: number;
+  sustain: number;
+  release: number;
+}
+
 export interface Channel {
   id: string;
   name: string;
@@ -14,6 +21,7 @@ export interface Channel {
   steps: NoteStep[]; // 16 steps
   volume: number;
   mute: boolean;
+  envelope: Envelope;
 }
 
 export interface SequencerState {
@@ -28,11 +36,13 @@ export interface SequencerState {
   setVolume: (channelId: string, volume: number) => void;
   toggleMute: (channelId: string) => void;
   setWaveform: (channelId: string, waveform: Channel['waveform']) => void;
+  setEnvelope: (channelId: string, envelope: Partial<Envelope>) => void;
   play: () => void;
   stop: () => void;
   setCurrentStep: (step: number) => void;
   clearChannel: (channelId: string) => void;
   clearAll: () => void;
+  loadProject: (channels: Channel[], bpm: number) => void;
 }
 
 // 16개 스텝 초기화 함수
@@ -53,6 +63,7 @@ const initialChannels: Channel[] = [
     steps: createEmptySteps('C4'),
     volume: 0.5,
     mute: false,
+    envelope: { attack: 0.005, decay: 0.1, sustain: 0.3, release: 0.1 },
   },
   {
     id: 'pulse2',
@@ -62,6 +73,7 @@ const initialChannels: Channel[] = [
     steps: createEmptySteps('E4'),
     volume: 0.5,
     mute: false,
+    envelope: { attack: 0.005, decay: 0.1, sustain: 0.3, release: 0.1 },
   },
   {
     id: 'triangle',
@@ -71,6 +83,7 @@ const initialChannels: Channel[] = [
     steps: createEmptySteps('C3'),
     volume: 0.5,
     mute: false,
+    envelope: { attack: 0.01, decay: 0.2, sustain: 0.5, release: 0.2 },
   },
   {
     id: 'noise',
@@ -80,6 +93,7 @@ const initialChannels: Channel[] = [
     steps: createEmptySteps('C4'),
     volume: 0.5,
     mute: false,
+    envelope: { attack: 0.001, decay: 0.2, sustain: 0, release: 0.1 },
   },
 ];
 
@@ -155,6 +169,16 @@ export const useSequencerStore = create<SequencerState>()(
           ),
         })),
 
+      // ADSR 엔벨로프 설정
+      setEnvelope: (channelId: string, envelope: Partial<Envelope>) =>
+        set((state) => ({
+          channels: state.channels.map((channel) =>
+            channel.id === channelId
+              ? { ...channel, envelope: { ...channel.envelope, ...envelope } }
+              : channel
+          ),
+        })),
+
       // 재생 시작
       play: () => set({ isPlaying: true }),
 
@@ -192,6 +216,15 @@ export const useSequencerStore = create<SequencerState>()(
           })),
           currentStep: 0,
         })),
+
+      // 프로젝트 불러오기
+      loadProject: (channels: Channel[], bpm: number) =>
+        set({
+          channels,
+          bpm,
+          currentStep: 0,
+          isPlaying: false,
+        }),
     }),
     {
       name: '8bitsbox-storage',

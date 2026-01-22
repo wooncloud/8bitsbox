@@ -43,16 +43,17 @@ npm start
 - ✅ 실시간 스텝 하이라이트
 - ✅ 4채널 동시 재생
 
-### 개발 예정
 **Phase 3: 신디사이저 디테일**
-- 🔄 ADSR 엔벨로프 조정
-- 🔄 파형 선택 UI (사각파, 삼각파, 톱니파)
-- 🔄 채널별 볼륨/뮤트 컨트롤
+- ✅ ADSR 엔벨로프 조정 (Attack, Decay, Sustain, Release)
+- ✅ 파형 선택 UI (사각파, 삼각파, 톱니파, 사인파)
+- ✅ 채널별 볼륨 슬라이더
+- ✅ 채널별 뮤트/언뮤트
+- ✅ 채널별 클리어 기능
 
 **Phase 4: 폴리싱**
-- 🔄 JSON 파일 내보내기/불러오기
-- 🔄 파형 시각화
-- 🔄 추가 UI 개선
+- ✅ JSON 프로젝트 파일 내보내기/불러오기
+- ✅ 프로젝트 저장 및 로드 기능
+- ✅ 에러 핸들링 및 파일 검증
 
 ## 📁 프로젝트 구조
 
@@ -63,25 +64,53 @@ src/
 │   ├── page.tsx           # 메인 페이지
 │   └── globals.css        # 전역 스타일
 ├── components/
-│   └── sequencer/
-│       ├── Grid.tsx       # 시퀀서 그리드 컨테이너
-│       ├── StepButton.tsx # 개별 스텝 버튼
-│       └── Transport.tsx  # 재생 컨트롤 (Play/Stop/BPM)
+│   ├── sequencer/
+│   │   ├── Grid.tsx       # 시퀀서 그리드 컨테이너
+│   │   ├── StepButton.tsx # 개별 스텝 버튼
+│   │   └── Transport.tsx  # 재생 컨트롤 (Play/Stop/BPM) + 파일 관리
+│   ├── synth/
+│   │   ├── ChannelCard.tsx      # 채널별 설정 카드
+│   │   └── EnvelopeControl.tsx  # ADSR 엔벨로프 컨트롤
+│   └── ui/
+│       ├── FileManager.tsx # 프로젝트 저장/로드 컴포넌트
+│       └── Slider.tsx      # 재사용 가능한 슬라이더 컴포넌트
 ├── store/
-│   └── useSequencerStore.ts  # Zustand 상태 관리
+│   └── useSequencerStore.ts  # Zustand 상태 관리 (ADSR, 프로젝트 로드)
 ├── hooks/
 │   └── useAudioEngine.ts     # Tone.js 오디오 엔진 훅
 └── lib/
-    └── audioUtils.ts         # Synth 생성 유틸리티
+    ├── audioUtils.ts         # Synth 생성 유틸리티
+    └── fileUtils.ts          # 프로젝트 파일 import/export 유틸리티
 ```
 
 ## 🎹 사용법
 
+### 기본 시퀀싱
 1. **패턴 만들기**: Grid에서 스텝 버튼을 클릭하여 노트 활성화/비활성화
 2. **재생하기**: Transport의 ▶ Play 버튼을 눌러 패턴 재생
 3. **템포 조절**: BPM 슬라이더로 60~200 BPM 사이 조절
 4. **초기화**: Clear All 버튼으로 모든 패턴 삭제
-5. **자동 저장**: 모든 설정은 localStorage에 자동 저장됨
+
+### 채널 설정 (Channel Settings)
+각 채널 카드에서:
+- **Waveform**: 파형 선택 (Square, Sine, Triangle, Sawtooth)
+- **Volume**: 볼륨 조절 (0-100%)
+- **ADSR**:
+  - Attack (A): 소리 시작 속도
+  - Decay (D): 초기 감쇠 시간
+  - Sustain (S): 지속 레벨
+  - Release (R): 소리 종료 속도
+- **Mute/Unmute**: 채널 음소거/해제
+- **Clear**: 해당 채널 패턴 삭제
+
+### 프로젝트 관리
+- **💾 Save Project**: 현재 프로젝트를 `.8bb.json` 파일로 저장
+- **📂 Load Project**: 저장된 프로젝트 파일 불러오기
+- **자동 저장**: 모든 설정은 브라우저 localStorage에도 자동 저장
+
+### 파일 형식
+- 파일 확장자: `.8bb.json`
+- 포함 내용: 채널 설정, BPM, ADSR, 볼륨, 파형, 모든 스텝 데이터
 
 ## 📝 라이선스
 

@@ -12,9 +12,10 @@ export function createSynthForChannel(
     return new Tone.NoiseSynth({
       noise: { type: 'white' },
       envelope: {
-        attack: 0.001,
-        decay: 0.2,
-        sustain: 0,
+        attack: channel.envelope.attack,
+        decay: channel.envelope.decay,
+        sustain: channel.envelope.sustain,
+        release: channel.envelope.release,
       },
     }).toDestination();
   } else {
@@ -24,10 +25,10 @@ export function createSynthForChannel(
         type: channel.waveform,
       },
       envelope: {
-        attack: 0.005,
-        decay: 0.1,
-        sustain: 0.3,
-        release: 0.1,
+        attack: channel.envelope.attack,
+        decay: channel.envelope.decay,
+        sustain: channel.envelope.sustain,
+        release: channel.envelope.release,
       },
     }).toDestination();
   }

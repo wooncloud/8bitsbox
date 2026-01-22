@@ -2,16 +2,10 @@
 
 import { useSequencerStore } from '@/store/useSequencerStore';
 import FileManager from '@/components/ui/FileManager';
+import Slider from '@/components/ui/Slider';
 
 export default function Transport() {
   const { bpm, isPlaying, play, stop, setBpm, clearAll } = useSequencerStore();
-
-  const handleBpmChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseInt(e.target.value, 10);
-    if (!isNaN(value)) {
-      setBpm(value);
-    }
-  };
 
   const handlePlayStop = () => {
     if (isPlaying) {
@@ -47,31 +41,16 @@ export default function Transport() {
         </div>
 
         {/* BPM 컨트롤 */}
-        <div className="control-group bpm-control">
-          <label htmlFor="bpm-slider" className="control-label">
-            <span className="nes-text is-primary">BPM</span>
-          </label>
-          <div className="bpm-inputs">
-            <input
-              id="bpm-slider"
-              type="range"
-              min="60"
-              max="200"
-              value={bpm}
-              onChange={handleBpmChange}
-              className="bpm-slider"
-              disabled={isPlaying}
-            />
-            <input
-              type="number"
-              min="60"
-              max="200"
-              value={bpm}
-              onChange={handleBpmChange}
-              className="nes-input bpm-number"
-              disabled={isPlaying}
-            />
-          </div>
+        <div className="bpm-section">
+          <Slider
+            label="BPM"
+            value={bpm}
+            min={60}
+            max={200}
+            step={1}
+            onChange={setBpm}
+            formatter={(v) => `${v}`}
+          />
         </div>
 
         {/* 현재 상태 표시 */}
@@ -104,62 +83,8 @@ export default function Transport() {
           min-width: 120px;
         }
 
-        .bpm-control {
-          flex-direction: column;
-          align-items: flex-start;
-          gap: 0.5rem;
-        }
-
-        .control-label {
-          font-size: 0.875rem;
-          margin-bottom: 0.25rem;
-        }
-
-        .bpm-inputs {
-          display: flex;
-          align-items: center;
-          gap: 1rem;
+        .bpm-section {
           width: 100%;
-        }
-
-        .bpm-slider {
-          flex: 1;
-          height: 8px;
-          background: #212529;
-          border: 4px solid #fff;
-          outline: none;
-          -webkit-appearance: none;
-          appearance: none;
-        }
-
-        .bpm-slider::-webkit-slider-thumb {
-          -webkit-appearance: none;
-          appearance: none;
-          width: 20px;
-          height: 20px;
-          background: #92cc41;
-          border: 2px solid #fff;
-          cursor: pointer;
-          image-rendering: pixelated;
-        }
-
-        .bpm-slider::-moz-range-thumb {
-          width: 20px;
-          height: 20px;
-          background: #92cc41;
-          border: 2px solid #fff;
-          cursor: pointer;
-          image-rendering: pixelated;
-        }
-
-        .bpm-slider:disabled {
-          opacity: 0.5;
-          cursor: not-allowed;
-        }
-
-        .bpm-number {
-          width: 100px;
-          text-align: center;
         }
 
         .status-display {
@@ -178,14 +103,6 @@ export default function Transport() {
           .control-group button {
             flex: 1;
             min-width: auto;
-          }
-
-          .bpm-inputs {
-            flex-direction: column;
-          }
-
-          .bpm-slider {
-            width: 100%;
           }
         }
       `}</style>

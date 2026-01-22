@@ -70,8 +70,11 @@ src/
 │   │   ├── Grid.tsx       # 시퀀서 그리드 컨테이너
 │   │   ├── StepButton.tsx # 개별 스텝 버튼
 │   │   └── Transport.tsx  # 재생 컨트롤 (Play/Stop/BPM)
-│   └── synth/
-│       └── ChannelCard.tsx # 채널별 설정 카드 (ADSR, 파형, 볼륨)
+│   ├── synth/
+│   │   ├── ChannelCard.tsx      # 채널별 설정 카드
+│   │   └── EnvelopeControl.tsx  # ADSR 엔벨로프 컨트롤
+│   └── ui/
+│       └── Slider.tsx     # 재사용 가능한 슬라이더 컴포넌트
 ├── store/
 │   └── useSequencerStore.ts  # Zustand 상태 관리 (ADSR 포함)
 ├── hooks/

@@ -1,4 +1,4 @@
-import * as Tone from 'tone';
+import { Synth, NoiseSynth } from 'tone';
 import type { Channel } from '@/store/useSequencerStore';
 
 /**
@@ -6,10 +6,10 @@ import type { Channel } from '@/store/useSequencerStore';
  */
 export function createSynthForChannel(
   channel: Channel
-): Tone.Synth | Tone.NoiseSynth {
+): Synth | NoiseSynth {
   if (channel.type === 'noise') {
     // Noise 채널: NoiseSynth 사용
-    return new Tone.NoiseSynth({
+    return new NoiseSynth({
       noise: { type: 'white' },
       envelope: {
         attack: channel.envelope.attack,
@@ -20,7 +20,7 @@ export function createSynthForChannel(
     }).toDestination();
   } else {
     // Pulse, Triangle 채널: 일반 Synth 사용
-    return new Tone.Synth({
+    return new Synth({
       oscillator: {
         type: channel.waveform,
       },
@@ -39,8 +39,8 @@ export function createSynthForChannel(
  */
 export function createSynthMap(
   channels: Channel[]
-): Map<string, Tone.Synth | Tone.NoiseSynth> {
-  const synthMap = new Map<string, Tone.Synth | Tone.NoiseSynth>();
+): Map<string, Synth | NoiseSynth> {
+  const synthMap = new Map<string, Synth | NoiseSynth>();
   channels.forEach((channel) => {
     synthMap.set(channel.id, createSynthForChannel(channel));
   });

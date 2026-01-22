@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import * as Tone from 'tone';
+import { Loop, Synth, NoiseSynth, Transport, Draw, gainToDb, start } from 'tone';
 import { useSequencerStore } from '@/store/useSequencerStore';
 import { createSynthMap } from '@/lib/audioUtils';
 
@@ -12,10 +12,10 @@ import { createSynthMap } from '@/lib/audioUtils';
  * - BPM 동기화 및 재생/정지 처리
  */
 export function useAudioEngine() {
-  const synthsRef = useRef<Map<string, Tone.Synth | Tone.NoiseSynth>>(
+  const synthsRef = useRef<Map<string, Synth | NoiseSynth>>(
     new Map()
   );
-  const loopRef = useRef<Tone.Loop | null>(null);
+  const loopRef = useRef<Loop | null>(null);
   const stepRef = useRef(0);
   const isInitializedRef = useRef(false);
 
@@ -36,7 +36,7 @@ export function useAudioEngine() {
     synthsRef.current = createSynthMap(channels);
 
     // 16스텝 루프 생성 (16n = 16분음표)
-    loopRef.current = new Tone.Loop((time) => {
+    loopRef.current = new Loop((time) => {
       const step = stepRef.current;
       const currentChannels = channelsRef.current;
 
@@ -45,10 +45,10 @@ export function useAudioEngine() {
         const noteStep = channel.steps[step];
         if (noteStep.isActive && !channel.mute) {
           const synth = synthsRef.current.get(channel.id);
-          if (synth instanceof Tone.NoiseSynth) {
+          if (synth instanceof NoiseSynth) {
             // Noise는 피치 없이 재생
             synth.triggerAttackRelease('16n', time);
-          } else if (synth instanceof Tone.Synth) {
+          } else if (synth instanceof Synth) {
             // 일반 Synth는 피치와 함께 재생
             synth.triggerAttackRelease(noteStep.pitch, '16n', time);
           }
@@ -56,7 +56,7 @@ export function useAudioEngine() {
       });
 
       // UI 업데이트 (메인 스레드에서 실행)
-      Tone.Draw.schedule(() => {
+      Draw.schedule(() => {
         stepRef.current = (step + 1) % 16;
         setCurrentStep(stepRef.current);
       }, time);
@@ -68,15 +68,15 @@ export function useAudioEngine() {
       synthsRef.current.clear();
       loopRef.current?.dispose();
       loopRef.current = null;
-      Tone.Transport.stop();
-      Tone.Transport.cancel();
+      Transport.stop();
+      Transport.cancel();
       isInitializedRef.current = false;
     };
   }, []);
 
   // BPM 동기화
   useEffect(() => {
-    Tone.Transport.bpm.value = bpm;
+    Transport.bpm.value = bpm;
   }, [bpm]);
 
   // 채널별 볼륨, 파형, 엔벨로프 업데이트
@@ -85,7 +85,7 @@ export function useAudioEngine() {
       const synth = synthsRef.current.get(channel.id);
       if (synth) {
         // 볼륨 설정 (0~1 → dB 변환)
-        synth.volume.value = Tone.gainToDb(channel.volume);
+        synth.volume.value = gainToDb(channel.volume);
 
         // 엔벨로프 업데이트
         synth.envelope.attack = channel.envelope.attack;
@@ -94,7 +94,7 @@ export function useAudioEngine() {
         synth.envelope.release = channel.envelope.release;
 
         // 파형 업데이트 (Synth만 해당)
-        if (synth instanceof Tone.Synth) {
+        if (synth instanceof Synth) {
           synth.oscillator.type = channel.waveform;
         }
       }
@@ -106,16 +106,16 @@ export function useAudioEngine() {
     const handlePlayback = async () => {
       if (isPlaying) {
         // 오디오 컨텍스트 시작 (사용자 상호작용 필요)
-        await Tone.start();
+        await start();
 
         // 스텝 초기화 및 재생 시작
         stepRef.current = 0;
         setCurrentStep(0);
         loopRef.current?.start(0);
-        Tone.Transport.start();
+        Transport.start();
       } else {
         // 정지
-        Tone.Transport.stop();
+        Transport.stop();
         loopRef.current?.stop();
         stepRef.current = 0;
         setCurrentStep(0);

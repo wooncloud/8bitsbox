@@ -1,7 +1,15 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { Loop, Synth, NoiseSynth, Transport, Draw, gainToDb, start } from 'tone';
+import {
+  Synth,
+  NoiseSynth,
+  Loop,
+  Transport,
+  Draw,
+  gainToDb,
+  start
+} from 'tone/build/esm/index';
 import { useSequencerStore } from '@/store/useSequencerStore';
 import { createSynthMap } from '@/lib/audioUtils';
 
@@ -45,10 +53,10 @@ export function useAudioEngine() {
         const noteStep = channel.steps[step];
         if (noteStep.isActive && !channel.mute) {
           const synth = synthsRef.current.get(channel.id);
-          if (synth instanceof NoiseSynth) {
+          if (synth instanceof NoiseSynth) { // Removed Tone. prefix
             // Noise는 피치 없이 재생
             synth.triggerAttackRelease('16n', time);
-          } else if (synth instanceof Synth) {
+          } else if (synth instanceof Synth) { // Removed Tone. prefix
             // 일반 Synth는 피치와 함께 재생
             synth.triggerAttackRelease(noteStep.pitch, '16n', time);
           }

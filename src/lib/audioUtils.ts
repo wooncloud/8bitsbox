@@ -1,4 +1,4 @@
-import { Synth, NoiseSynth } from 'tone';
+import { Synth, NoiseSynth } from 'tone/build/esm/index';
 import type { Channel } from '@/store/useSequencerStore';
 
 /**
